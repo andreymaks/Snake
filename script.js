@@ -23,8 +23,9 @@ const addClass = function (position, className) {
 
 const drawSnake = function () {
   clearClass("snake");
-  snake.forEach((position) => {
-    addClass(position, "snake");
+  clearClass("head");
+  snake.forEach((position, i) => {
+    i !== 0 ? addClass(position, "snake") : addClass(position, "head");
   });
 };
 
@@ -50,45 +51,40 @@ const generateFood = function () {
 };
 
 const moveSnake = function () {
-  snake = snake.map((position, i) => {
-    if (i !== 0) {
-      return (position = snake[i - 1]);
-    } else {
-      return (position = {
-        x: position.x + direction.x,
-        y: position.y + direction.y,
-      });
-    }
-  });
+  const head = {
+    x: snake[0].x + direction.x,
+    y: snake[0].y + direction.y,
+  };
+  // snake = snake.map((position, i) => {
+  //   if (i !== 0) {
+  //     return (position = snake[i - 1]);
+  //   } else {
+  //     return (position = {
+  //       x: position.x + direction.x,
+  //       y: position.y + direction.y,
+  //     });
+  //   }
+  // });
   if (
-    snake[0].x >= boardSize ||
-    snake[0].y >= boardSize ||
-    snake[0].x < 0 ||
-    snake[0].y < 0 ||
-    snake
-      .slice(1)
-      .some(
-        (position) => position.x === snake[0].x && position.y === snake[0].y
-      )
+    head.x >= boardSize ||
+    head.y >= boardSize ||
+    head.x < 0 ||
+    head.y < 0 ||
+    snake.some((position) => position.x === head.x && position.y === head.y)
   ) {
     clearInterval(interval);
     alert("Game over!");
-  } else if (snake[0].x === food.x && snake[0].y === food.y) {
+  } else if (head.x === food.x && head.y === food.y) {
     food = generateFood();
-    const lastSnakeCell = snake[snake.length - 1];
-    snake.push({
-      x: lastSnakeCell.x - direction.x,
-      y: lastSnakeCell.y - direction.y,
-    });
+  } else {
+    snake.pop();
   }
+  snake.unshift(head);
 };
 
 const gameLoop = function () {
-  // createField();
   moveSnake();
   drawSnake();
-  // drawSnake();
-  // generateFood();
 };
 
 createField();
