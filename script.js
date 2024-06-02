@@ -1,7 +1,9 @@
-const boardSize = 20;
+const boardSize = 10;
 const field = document.querySelector(".field");
-let snake = [{ x: 9, y: 9 }];
+const scoreText = document.querySelector(".score");
+let snake = [{ x: 1, y: 1 }];
 let direction = { x: 1, y: 0 };
+let score = 0;
 
 const createField = function () {
   for (let i = 0; i < boardSize * boardSize; i++) {
@@ -55,16 +57,6 @@ const moveSnake = function () {
     x: snake[0].x + direction.x,
     y: snake[0].y + direction.y,
   };
-  // snake = snake.map((position, i) => {
-  //   if (i !== 0) {
-  //     return (position = snake[i - 1]);
-  //   } else {
-  //     return (position = {
-  //       x: position.x + direction.x,
-  //       y: position.y + direction.y,
-  //     });
-  //   }
-  // });
   if (
     head.x >= boardSize ||
     head.y >= boardSize ||
@@ -74,8 +66,11 @@ const moveSnake = function () {
   ) {
     clearInterval(interval);
     alert("Game over!");
+    return;
   } else if (head.x === food.x && head.y === food.y) {
     food = generateFood();
+    score++;
+    scoreText.innerHTML = score;
   } else {
     snake.pop();
   }
@@ -94,16 +89,16 @@ document.addEventListener("keydown", function (e) {
   e.preventDefault();
   switch (e.key) {
     case "ArrowUp":
-      direction = { x: 0, y: -1 };
+      if (direction.y !== 1) direction = { x: 0, y: -1 };
       break;
     case "ArrowDown":
-      direction = { x: 0, y: 1 };
+      if (direction.y !== -1) direction = { x: 0, y: 1 };
       break;
     case "ArrowLeft":
-      direction = { x: -1, y: 0 };
+      if (direction.x !== 1) direction = { x: -1, y: 0 };
       break;
     case "ArrowRight":
-      direction = { x: 1, y: 0 };
+      if (direction.x !== -1) direction = { x: 1, y: 0 };
       break;
     default:
       break;
